@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esqueleto Humano</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            padding: 30px;
+            gap: 30px;
+        }
+
+        .main-image-container {
+            flex: 2;
+            min-width: 400px;
+            text-align: center;
+        }
+
+        .main-image-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .main-image {
+            width: 100%;
+            height: auto;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .main-image:hover {
+            transform: scale(1.02);
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .sidebar-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .sidebar-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        /* Estilo específico para la imagen del esqueleto apendicular */
+        .sidebar-item:nth-child(2) {
+            /* Hacer el contenedor más alto para acomodar la imagen vertical */
+            min-height: 320px;
+        }
+
+        .sidebar-item:nth-child(2) img {
+            /* Ajustar para imagen vertical (328 x 509) */
+            height: 280px;
+            width: 100%;
+            object-fit: contain; /* Cambiar a contain para mostrar la imagen completa */
+            object-position: center;
+            background-color: #f8f9fa; /* Fondo sutil para el espacio extra */
+            padding: 10px; /* Pequeño padding para elegancia */
+        }
+
+        .sidebar-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .sidebar-item-content {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .sidebar-item h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-item p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .concept-section {
+            width: 100%;
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+        }
+
+        .concept-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .concept-section p {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .main-image-container {
+                min-width: auto;
+            }
+
+            .sidebar {
+                min-width: auto;
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .sidebar-item {
+                min-width: 200px;
+            }
+
+            /* Ajuste responsivo para la imagen apendicular */
+            .sidebar-item:nth-child(2) {
+                min-width: 180px; /* Más angosto en móvil pero manteniendo proporción */
+                min-height: 280px;
+            }
+
+            .sidebar-item:nth-child(2) img {
+                height: 220px;
+                padding: 8px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                flex-direction: column;
+            }
+
+            .sidebar-item {
+                min-width: auto;
+            }
+
+            /* En pantallas muy pequeñas, mantener altura adecuada */
+            .sidebar-item:nth-child(2) {
+                min-height: 300px;
+            }
+
+            .sidebar-item:nth-child(2) img {
+                height: 240px;
+                padding: 5px;
+            }
+
+            body {
+                padding: 10px;
+            }
+
+            .content-wrapper {
+                padding: 15px;
+            }
+        }
+
+        /* Efecto de carga */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Esqueleto humano</h1>
+        </div>
+        
+        <div class="content-wrapper">
+            <div class="main-image-container">
+                <div class="main-image-wrapper">
+                    <!-- Image Map Generated by http://www.image-map.net/ -->
+                    <img src="code/images/41628.jpg" 
+                         alt="Esqueleto Humano Completo" 
+                         class="main-image" 
+                         usemap="#image-map" 
+                         id="mainImage">
+                    
+                    <div class="loading-overlay" id="loadingOverlay">
+                        <div class="spinner"></div>
+                    </div>
+                    
+                    <map name="image-map" id="imageMap">
+                        <area target="_blank" 
+                              alt="esqueleto axial" 
+                              title="esqueleto axial" 
+                              href="code/esqueletoaxial.html" 
+                              coords="486,1089,431,960,430,773,338,763,313,635,344,478,431,365,448,285,422,271,395,196,399,90,483,48,571,126,566,202,534,272,515,284,522,351,646,543,638,736,541,776,549,964" 
+                              shape="poly">
+                        
+                        <area target="_blank" 
+                              alt="esqueleto apendicular brazo derecho" 
+                              title="esqueleto apendicular brazo derecho" 
+                              href="esqueleto-apendicular.html" 
+                              coords="325,483,420,360,260,342,161,726,121,1068,51,1196,112,1295,169,1265,171,1055,229,736,237,600,294,421" 
+                              shape="poly">
+                        
+                        <area target="_blank" 
+                              alt="esqueleto apendicular brazo izquierdo" 
+                              title="esqueleto apendicular brazo izquierdo" 
+                              href="esqueleto-apendicular.html" 
+                              coords="544,361,640,510,678,427,735,588,749,740,790,958,809,1086,799,1263,867,1300,917,1199,853,1031,816,750,714,384,664,331" 
+                              shape="poly">
+                        
+                        <area target="_blank" 
+                              alt="esqueleto apendicular pierna derecha" 
+                              title="esqueleto apendicular pierna derecha" 
+                              href="esqueleto-apendicular.html" 
+                              coords="422,916,420,968,442,1009,425,1035,474,1143,401,1117,377,1148,350,1515,373,1582,330,1675,317,1913,325,2120,173,2273,107,2251,246,2080,270,2001,276,1610,325,1104,383,1069,325,956,367,905" 
+                              shape="poly">
+                        
+                        <area target="_blank" 
+                              alt="esqueleto apendicular pierna izquierda" 
+                              title="esqueleto apendicular pierna izquierda" 
+                              href="esqueleto-apendicular.html" 
+                              coords="559,908,553,967,533,1006,555,1030,496,1114,500,1161,543,1148,570,1116,613,1189,637,1501,603,1574,639,1649,671,2036,673,2141,823,2280,888,2254,774,2117,727,2020,701,1633,709,1576,681,1527,662,1290,641,1145,649,1086,598,1073,628,1041,655,941,610,904" 
+                              shape="poly">
+                    </map>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="sidebar-item">
+                    <a href="code/esqueletoaxial.html" style="text-decoration: none; color: inherit;">
+                        <img src="code/images/esqueletoaxial.jpeg" alt="Esqueleto Axial" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmaWxsPSIjOTk5Ij5Fc3F1ZWxldG8gQXhpYWw8L3RleHQ+PC9zdmc+'">
+                        <div class="sidebar-item-content">
+                            <h3>Esqueleto Axial</h3>
+                            <p>Incluye el cráneo, columna vertebral y caja torácica. Forma el eje central del cuerpo.</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="sidebar-item">
+                    <a href="esqueleto-apendicular.html" style="text-decoration: none; color: inherit;">
+                        <img src="code/images/esqueleto apendicular.jpg" alt="Esqueleto Apendicular" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMxMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmaWxsPSIjOTk5Ij5Fc3F1ZWxldG8gQXBlbmRpY3VsYXI8L3RleHQ+PC9zdmc+'">
+                        <div class="sidebar-item-content">
+                            <h3>Esqueleto Apendicular</h3>
+                            <p>Comprende brazos, piernas y las cinturas que los conectan al esqueleto axial.</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="concept-section">
+                <h2>concepto de el esqueleto humano</h2>
+                <p>El esqueleto humano es la estructura interna que proporciona soporte, protección y forma al cuerpo. Está compuesto por 206 huesos en adultos y se divide en dos partes principales: el esqueleto axial y el esqueleto apendicular.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para redimensionar el mapa de imagen
+        function resizeImageMap() {
+            const img = document.getElementById('mainImage');
+            const map = document.getElementById('imageMap');
+            
+            if (!img || !map) return;
+            
+            // Obtener dimensiones originales (estas son las dimensiones de tu imagen original)
+            const originalWidth = 1000; // Ajusta según tu imagen original
+            const originalHeight = 2400; // Ajusta según tu imagen original
+            
+            // Obtener dimensiones actuales
+            const currentWidth = img.clientWidth;
+            const currentHeight = img.clientHeight;
+            
+            // Calcular factores de escala
+            const scaleX = currentWidth / originalWidth;
+            const scaleY = currentHeight / originalHeight;
+            
+            // Redimensionar todas las áreas del mapa
+            const areas = map.querySelectorAll('area');
+            areas.forEach(area => {
+                const coords = area.dataset.originalCoords || area.getAttribute('coords');
+                if (!area.dataset.originalCoords) {
+                    area.dataset.originalCoords = coords;
+                }
+                
+                const coordsArray = coords.split(',').map(Number);
+                const scaledCoords = [];
+                
+                for (let i = 0; i < coordsArray.length; i += 2) {
+                    scaledCoords.push(Math.round(coordsArray[i] * scaleX));
+                    scaledCoords.push(Math.round(coordsArray[i + 1] * scaleY));
+                }
+                
+                area.setAttribute('coords', scaledCoords.join(','));
+            });
+        }
+
+        // Función para mostrar/ocultar overlay de carga
+        function toggleLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        // Eventos
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainImage = document.getElementById('mainImage');
+            
+            // Mostrar carga mientras se carga la imagen
+            mainImage.addEventListener('loadstart', () => toggleLoading(true));
+            mainImage.addEventListener('load', () => {
+                toggleLoading(false);
+                resizeImageMap();
+            });
+            
+            // Redimensionar mapa cuando cambie el tamaño de la ventana
+            window.addEventListener('resize', resizeImageMap);
+            
+            // Efectos hover para las áreas del mapa
+            const areas = document.querySelectorAll('area');
+            areas.forEach(area => {
+                area.addEventListener('mouseenter', function() {
+                    document.body.style.cursor = 'pointer';
+                    this.style.opacity = '0.8';
+                });
+                
+                area.addEventListener('mouseleave', function() {
+                    document.body.style.cursor = 'default';
+                    this.style.opacity = '1';
+                });
+            });
+        });
+
+        // Redimensionar al cargar la página
+        window.addEventListener('load', resizeImageMap);
+    </script>
+</body>
+</html>

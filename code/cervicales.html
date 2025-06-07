@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomía Vertebral Interactiva</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background: #ff3742;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+        }
+
+        .image-container {
+            position: relative;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+        }
+
+        .main-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .main-image:hover {
+            transform: scale(1.02);
+        }
+
+        .fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .fullscreen-image {
+            max-width: 95%;
+            max-height: 95%;
+            border-radius: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #ff3742;
+            transform: scale(1.1);
+        }
+
+        .controls-section {
+            padding: 30px;
+            background: white;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 2px;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .anatomy-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .anatomy-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .anatomy-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .info-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #ff4757;
+        }
+
+        .modal-title {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #4facfe;
+            padding-bottom: 10px;
+        }
+
+        .modal-text {
+            color: #555;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .buttons-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .modal-content {
+                margin: 20px;
+                padding: 20px;
+            }
+            
+            .back-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+                top: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦴 Anatomía Vertebral Interactiva</h1>
+            <p>Explora las estructuras anatómicas de las vértebras cervicales</p>
+            <button class="back-btn" onclick="goBack()">Regresar</button>
+        </div>
+
+        <div class="image-container">
+            <img src="images/columnacervicaltresangulos.png" class="main-image" id="mainImage" alt="Anatomía Vertebral" onclick="openFullscreen()">
+            <p style="margin-top: 15px; color: #666; font-style: italic;">Haz clic en la imagen para verla en pantalla completa</p>
+        </div>
+
+        <div class="controls-section">
+            <h2 class="section-title">Estructuras Anatómicas</h2>
+            <div class="buttons-grid">
+                <button class="anatomy-btn" onclick="showInfo('atlas')">Atlas (C1)</button>
+                <button class="anatomy-btn" onclick="showInfo('axis')">Axis (C2)</button>
+                <button class="anatomy-btn" onclick="showInfo('cuerpo-vertebral')">Cuerpo Vertebral</button>
+                <button class="anatomy-btn" onclick="showInfo('arco-posterior')">Arco Posterior del Atlas</button>
+                <button class="anatomy-btn" onclick="showInfo('tuberculo-anterior')">Tubérculo Anterior</button>
+                <button class="anatomy-btn" onclick="showInfo('tuberculo-posterior')">Tubérculo Posterior</button>
+                <button class="anatomy-btn" onclick="showInfo('apofisis-espinosa')">Apófisis Espinosa</button>
+                <button class="anatomy-btn" onclick="showInfo('apofisis-transversa')">Apófisis Transversa</button>
+                <button class="anatomy-btn" onclick="showInfo('apofisis-unciforme')">Apófisis Unciforme</button>
+                <button class="anatomy-btn" onclick="showInfo('apofisis-articular')">Apófisis Articular</button>
+                <button class="anatomy-btn" onclick="showInfo('diente-axis')">Diente del Axis</button>
+                <button class="anatomy-btn" onclick="showInfo('surco-nervio')">Surco del Nervio Espinal</button>
+                <button class="anatomy-btn" onclick="showInfo('disco-intervertebral')">Disco Intervertebral</button>
+                <button class="anatomy-btn" onclick="showInfo('articulacion-atlantoaxoidea')">Art. Atlantoaxoidea</button>
+                <button class="anatomy-btn" onclick="showInfo('tuberculo-chessgonez')">Tubérculo de Chassaignac</button>
+                <button class="anatomy-btn" onclick="showInfo('carilla-articular')">Carilla Articular Inferior</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de pantalla completa -->
+    <div class="fullscreen-overlay" id="fullscreenOverlay">
+        <img src="images/columnacervicaltresangulos.png" class="fullscreen-image" alt="Anatomía Vertebral">
+        <button class="close-btn" onclick="closeFullscreen()">✕ Cerrar</button>
+    </div>
+
+    <!-- Modal de información -->
+    <div class="info-modal" id="infoModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeInfo()">✕</button>
+            <h3 class="modal-title" id="modalTitle">Estructura Anatómica</h3>
+            <div class="modal-text" id="modalText">Información detallada...</div>
+        </div>
+    </div>
+
+    <script>
+        // Información anatómica detallada
+        const anatomyInfo = {
+            'atlas': {
+                title: 'Atlas (C1)',
+                text: 'La primera vértebra cervical, también conocida como Atlas. Es única porque no tiene cuerpo vertebral y está especializada para soportar el cráneo. Su nombre proviene del titán griego Atlas que sostenía el mundo. Presenta un arco anterior y posterior, masas laterales con carillas articulares para el occipital, y un foramen vertebral amplio para el paso de la médula espinal.'
+            },
+            'axis': {
+                title: 'Axis (C2)',
+                text: 'La segunda vértebra cervical, caracterizada por su proceso odontoideo (diente del axis) que se proyecta superiormente. Esta estructura permite la rotación de la cabeza al articularse con el atlas. El axis es fundamental para los movimientos de rotación del cuello y presenta un cuerpo vertebral robusto con apófisis espinosas bífidas.'
+            },
+            'cuerpo-vertebral': {
+                title: 'Cuerpo Vertebral',
+                text: 'Estructura cilíndrica anterior de las vértebras que soporta el peso corporal. En las vértebras cervicales es más pequeño que en otras regiones. Está formado por hueso esponjoso cubierto por una capa de hueso cortical. Los cuerpos vertebrales están separados por discos intervertebrales que actúan como amortiguadores.'
+            },
+            'arco-posterior': {
+                title: 'Arco Posterior del Atlas',
+                text: 'Estructura posterior del atlas que completa el anillo vertebral. Es más delgado que el arco anterior y presenta un tubérculo posterior para inserciones musculares. En su superficie superior tiene un surco para el paso de la arteria vertebral y el primer nervio cervical.'
+            },
+            'tuberculo-anterior': {
+                title: 'Tubérculo Anterior',
+                text: 'Prominencia ósea ubicada en la parte anterior del atlas. Sirve como punto de inserción para el músculo largo del cuello y el ligamento atlantooccipital anterior. Es palpable en el cuello y representa un punto de referencia anatómico importante.'
+            },
+            'tuberculo-posterior': {
+                title: 'Tubérculo Posterior',
+                text: 'Prominencia ósea en la parte posterior del atlas, menos desarrollada que el tubérculo anterior. Sirve como punto de inserción para los músculos suboccipitales, especialmente el recto posterior menor de la cabeza. Su desarrollo variable puede influir en la sintomatología cervical.'
+            },
+            'apofisis-espinosa': {
+                title: 'Apófisis Espinosa',
+                text: 'Proyección ósea posterior que se extiende desde el arco vertebral. En las vértebras cervicales típicas (C3-C6) son bífidas (divididas en dos). La de C7 es prominente y palpable (vértebra prominente). Sirven como puntos de inserción para músculos y ligamentos del cuello.'
+            },
+            'apofisis-transversa': {
+                title: 'Apófisis Transversa',
+                text: 'Proyecciones laterales de las vértebras cervicales que presentan forámenes transversos únicos por donde pasan las arterias vertebrales (excepto C7). Tienen tubérculos anterior y posterior para inserciones musculares. Son fundamentales para los movimientos laterales del cuello.'
+            },
+            'apofisis-unciforme': {
+                title: 'Apófisis Unciforme',
+                text: 'También llamadas procesos uncinados, son proyecciones óseas laterales en los bordes superiores de los cuerpos vertebrales cervicales C3-C7. Forman las articulaciones uncovertebrales o de Luschka con la vértebra superior, limitando la flexión lateral y proporcionando estabilidad adicional.'
+            },
+            'apofisis-articular': {
+                title: 'Apófisis Articular',
+                text: 'Proyecciones óseas que forman las articulaciones facetarias entre vértebras adyacentes. Las superiores tienen carillas que miran hacia arriba y atrás, mientras que las inferiores miran hacia abajo y adelante. Estas articulaciones permiten y limitan los movimientos cervicales.'
+            },
+            'diente-axis': {
+                title: 'Diente del Axis',
+                text: 'También llamado proceso odontoideo, es una proyección vertical del cuerpo del axis que se articula con el arco anterior del atlas. Actúa como un pivote alrededor del cual rota el atlas y el cráneo. Está estabilizado por ligamentos cruciales como el ligamento transverso del atlas.'
+            },
+            'surco-nervio': {
+                title: 'Surco del Nervio Espinal',
+                text: 'Depresión en la superficie posterior del arco del atlas donde se aloja el primer nervio cervical y la arteria vertebral. Este surco puede estar parcial o completamente osificado en algunas personas, formando un foramen completo, lo que puede tener implicaciones clínicas.'
+            },
+            'disco-intervertebral': {
+                title: 'Disco Intervertebral',
+                text: 'Estructura fibrocartilaginosa situada entre los cuerpos vertebrales que actúa como amortiguador y permite movimiento entre las vértebras. Consta de un núcleo pulposo central gelatinoso rodeado por un anillo fibroso. Los discos cervicales son más delgados anteriormente, contribuyendo a la lordosis cervical.'
+            },
+            'articulacion-atlantoaxoidea': {
+                title: 'Articulación Atlantoaxoidea',
+                text: 'Complejo articular entre el atlas y el axis que incluye tres articulaciones sinoviales: una medial entre el diente del axis y el arco anterior del atlas, y dos laterales entre las masas laterales. Esta articulación permite aproximadamente 50% de la rotación total del cuello.'
+            },
+            'tuberculo-chessgonez': {
+                title: 'Tubérculo de Chassaignac',
+                text: 'Tubérculo anterior prominente de la apófisis transversa de C6. Es un punto de referencia anatómico importante, palpable lateralmente al cartílago cricoides. Se utiliza para localizar la arteria carótida común para compresión en emergencias y como referencia en procedimientos cervicales.'
+            },
+            'carilla-articular': {
+                title: 'Carilla Articular Inferior',
+                text: 'Superficie articular lisa cubierta de cartílago hialino ubicada en las apófisis articulares inferiores. En la región cervical, estas carillas están orientadas hacia abajo y adelante, articulándose con las carillas superiores de la vértebra inferior para formar las articulaciones zigapofisarias.'
+            }
+        };
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function openFullscreen() {
+            document.getElementById('fullscreenOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFullscreen() {
+            document.getElementById('fullscreenOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function showInfo(structure) {
+            const info = anatomyInfo[structure];
+            if (info) {
+                document.getElementById('modalTitle').textContent = info.title;
+                document.getElementById('modalText').textContent = info.text;
+                document.getElementById('infoModal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeInfo() {
+            document.getElementById('infoModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar modales con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFullscreen();
+                closeInfo();
+            }
+        });
+
+        // Cerrar modal al hacer clic fuera del contenido
+        document.getElementById('infoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeInfo();
+            }
+        });
+
+        document.getElementById('fullscreenOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>

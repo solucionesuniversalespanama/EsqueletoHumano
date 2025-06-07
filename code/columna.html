@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomía de la Columna Vertebral</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) translateX(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .main-image-container {
+            position: relative;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .responsive-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+
+        .side-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .image-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 180px; /* Aumentado para formato retrato */
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            border: 2px dashed #ddd;
+            overflow: hidden;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .image-card h3 {
+            font-size: 1em;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .info-panel {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8ff);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+
+        .info-panel h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .info-panel p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Clickable areas overlay - INVISIBLE */
+        .clickable-area {
+            position: absolute;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .clickable-area:hover {
+            background: rgba(52, 152, 219, 0.1);
+            border: 2px solid rgba(52, 152, 219, 0.3);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .close {
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .modal-image-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .modal-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-text {
+            line-height: 1.8;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .modal-text h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .modal-text ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .modal-text li {
+            margin: 8px 0;
+        }
+
+        /* Tooltip styles */
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        /* Animations */
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .layout {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .side-images {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .back-button {
+                position: relative;
+                left: 0;
+                top: 0;
+                transform: none;
+                margin-bottom: 20px;
+                align-self: flex-start;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+
+            .modal-body {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .modal-header {
+                padding: 20px;
+            }
+
+            .modal-header h2 {
+                font-size: 1.5em;
+            }
+
+            .image-placeholder {
+                height: 150px; /* Ajustado para móvil */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-button" onclick="goBack()">
+                <span>←</span> Regresar
+            </button>
+            <h1>Anatomía de la Columna Vertebral</h1>
+            <p class="subtitle">Mapa Interactivo de las Vértebras</p>
+        </div>
+
+        <div class="content">
+            <div class="layout">
+                <div class="main-image-container">
+                    <div class="image-wrapper" id="imageWrapper">
+                        <img src="images/columna.png" 
+                             alt="Columna Vertebral" 
+                             class="responsive-image" 
+                             id="spineImage">
+                        <!-- Las áreas clickeables se generarán dinámicamente -->
+                    </div>
+                </div>
+
+                <div class="side-images">
+                    <a href="cervicales.html" class="image-card">
+                        <div class="image-placeholder">
+                            <img src="images/vertebrascervicales.jpeg" alt="Cervicales" class="card-image" onerror="this.style.display='none'; this.parentNode.innerHTML='🦴';">
+                        </div>
+                        <h3>Cervicales</h3>
+                    </a>
+                    <a href="columnatoracicas.html" class="image-card">
+                        <div class="image-placeholder">
+                            <img src="images/vertebratoraxica.jpeg" alt="Torácicas" class="card-image" onerror="this.style.display='none'; this.parentNode.innerHTML='🦴';">
+                        </div>
+                        <h3>Torácicas</h3>
+                    </a>
+                    <a href="lumbares.html" class="image-card">
+                        <div class="image-placeholder">
+                            <img src="images/Lumbarvertebrae.jpeg" alt="Lumbares" class="card-image" onerror="this.style.display='none'; this.parentNode.innerHTML='🦴';">
+                        </div>
+                        <h3>Lumbares</h3>
+                    </a>
+                    <a href="sacras.html" class="image-card">
+                        <div class="image-placeholder">
+                            <img src="images/vertebrasacras1.png" alt="Sacras" class="card-image" onerror="this.style.display='none'; this.parentNode.innerHTML='🦴';">
+                        </div>
+                        <h3>Sacras</h3>
+                    </a>
+                    <a href="coccix.html" class="image-card">
+                        <div class="image-placeholder">
+                            <img src="images/coccix.jpeg" alt="Cóccix" class="card-image" onerror="this.style.display='none'; this.parentNode.innerHTML='🦴';">
+                        </div>
+                        <h3>Cóccix</h3>
+                    </a>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <h3>📚 Información sobre la Columna Vertebral</h3>
+                <p>
+                    La columna vertebral es una estructura fundamental del sistema esquelético humano, 
+                    compuesta por 33-34 vértebras que se dividen en cinco regiones principales: 
+                    cervical (7 vértebras), torácica (12 vértebras), lumbar (5 vértebras), 
+                    sacra (5 vértebras fusionadas) y coccígea (4-5 vértebras fusionadas que forman el cóccix). 
+                    Haz clic en cada región del mapa para explorar más detalles.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="vertebralModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Título de la Región</h2>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img id="modalImage" src="" alt="Imagen de la región" class="modal-image">
+                </div>
+                <div class="modal-text">
+                    <div id="modalText">
+                        <!-- Contenido dinámico -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip element -->
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // Datos de las regiones vertebrales con imágenes actualizadas
+        const regionData = {
+            cervicales: {
+                title: "Vértebras Cervicales (C1-C7)",
+                image: "images/vertebrascervicales.jpeg",
+                content: `
+                    <h3>Características Principales:</h3>
+                    <p>Las vértebras cervicales forman la región superior de la columna vertebral y sostienen la cabeza.</p>
+                    <ul>
+                        <li><strong>Atlas (C1):</strong> Primera vértebra cervical, permite el movimiento de asentimiento</li>
+                        <li><strong>Axis (C2):</strong> Segunda vértebra, permite la rotación de la cabeza</li>
+                        <li><strong>C3-C7:</strong> Vértebras cervicales típicas</li>
+                        <li><strong>Función:</strong> Soporte de la cabeza y movimientos del cuello</li>
+                        <li><strong>Curva:</strong> Lordosis cervical (curvatura hacia adelante)</li>
+                    </ul>
+                `
+            },
+            toracicas: {
+                title: "Vértebras Torácicas (T1-T12)",
+                image: "images/vertebratoraxica.jpeg",
+                content: `
+                    <h3>Características Principales:</h3>
+                    <p>Las vértebras torácicas se articulan con las costillas formando la caja torácica.</p>
+                    <ul>
+                        <li><strong>Número:</strong> 12 vértebras (T1-T12)</li>
+                        <li><strong>Función:</strong> Protección de órganos torácicos</li>
+                        <li><strong>Articulación:</strong> Con las costillas mediante facetas articulares</li>
+                        <li><strong>Curva:</strong> Cifosis torácica (curvatura hacia atrás)</li>
+                        <li><strong>Movilidad:</strong> Limitada por la caja torácica</li>
+                    </ul>
+                `
+            },
+            lumbares: {
+                title: "Vértebras Lumbares (L1-L5)",
+                image: "images/Lumbarvertebrae.jpeg",
+                content: `
+                    <h3>Características Principales:</h3>
+                    <p>Las vértebras lumbares son las más grandes y robustas, soportan la mayor parte del peso corporal.</p>
+                    <ul>
+                        <li><strong>Número:</strong> 5 vértebras (L1-L5)</li>
+                        <li><strong>Tamaño:</strong> Las más grandes del cuerpo vertebral</li>
+                        <li><strong>Función:</strong> Soporte del peso corporal superior</li>
+                        <li><strong>Curva:</strong> Lordosis lumbar (curvatura hacia adelante)</li>
+                        <li><strong>Movilidad:</strong> Flexión, extensión y rotación limitada</li>
+                    </ul>
+                `
+            },
+            sacras: {
+                title: "Vértebras Sacras",
+                image: "images/vertebrasacras1.png",
+                content: `
+                    <h3>Características Principales:</h3>
+                    <p>Las vértebras sacras están fusionadas formando el hueso sacro.</p>
+                    <ul>
+                        <li><strong>Número:</strong> 5 vértebras fusionadas (S1-S5)</li>
+                        <li><strong>Forma:</strong> Triangular, base hacia arriba</li>
+                        <li><strong>Función:</strong> Transmisión de peso a la pelvis</li>
+                        <li><strong>Articulación:</strong> Con los huesos ilíacos (articulación sacroilíaca)</li>
+                        <li><strong>Agujeros:</strong> Forámenes sacros anterior y posterior</li>
+                    </ul>
+                `
+            },
+            coccix: {
+                title: "Cóccix (Vértebras Coccígeas)",
+                image: "images/coccix.jpeg",
+                content: `
+                    <h3>Características Principales:</h3>
+                    <p>El cóccix es la región más inferior de la columna vertebral, formado por la fusión de 3-5 vértebras coccígeas.</p>
+                    <ul>
+                        <li><strong>Estructura:</strong> 3-5 vértebras fusionadas (Co1-Co5)</li>
+                        <li><strong>Ubicación:</strong> Extremo inferior de la columna vertebral</li>
+                        <li><strong>Función:</strong> Punto de inserción muscular y ligamentosa</li>
+                        <li><strong>Forma:</strong> Triangular pequeño, curvado hacia adelante</li>
+                        <li><strong>Importancia:</strong> Soporte para músculos del suelo pélvico</li>
+                        <li><strong>Evolución:</strong> Vestigio de la cola ancestral</li>
+                    </ul>
+                `
+            }
+        };
+
+        // Coordenadas originales basadas en tu imagen de 1000x2119 píxeles
+        // Convertidas a proporciones relativas - CORREGIDAS
+        const originalImageDimensions = { width: 1000, height: 2119 };
+        
+        const originalAreas = {
+            cervicales: { 
+                x: 341 / originalImageDimensions.width, 
+                y: 148 / originalImageDimensions.height, 
+                width: (604 - 341) / originalImageDimensions.width, 
+                height: (430 - 148) / originalImageDimensions.height 
+            },
+            toracicas: { 
+                x: 338 / originalImageDimensions.width, 
+                y: 457 / originalImageDimensions.height, 
+                width: (614 - 338) / originalImageDimensions.width, 
+                height: (1270 - 457) / originalImageDimensions.height 
+            },
+            lumbares: { 
+                x: 345 / originalImageDimensions.width, 
+                y: 1305 / originalImageDimensions.height, 
+                width: (621 - 345) / originalImageDimensions.width, 
+                height: (1741 - 1305) / originalImageDimensions.height 
+            },
+            // COORDENADAS CORREGIDAS: intercambiadas sacras y coccix
+            sacras: { 
+                x: 325 / originalImageDimensions.width, 
+                y: 1757 / originalImageDimensions.height, 
+                width: (630 - 325) / originalImageDimensions.width, 
+                height: (2021 - 1757) / originalImageDimensions.height 
+            },
+            coccix: { 
+                x: 425 / originalImageDimensions.width, 
+                y: 2036 / originalImageDimensions.height, 
+                width: (528 - 425) / originalImageDimensions.width, 
+                height: (2094 - 2036) / originalImageDimensions.height 
+            }
+        };
+
+        let clickableAreas = [];
+
+        // Crear áreas clickeables
+        function createClickableAreas() {
+            const wrapper = document.getElementById('imageWrapper');
+            const img = document.getElementById('spineImage');
+            
+            // Limpiar áreas existentes
+            clickableAreas.forEach(area => {
+                if (area.element && area.element.parentNode) {
+                    area.element.parentNode.removeChild(area.element);
+                }
+            });
+            clickableAreas = [];
+
+            if (!img.complete || img.naturalWidth === 0) {
+                setTimeout(createClickableAreas, 100);
+                return;
+            }
+
+            Object.keys(originalAreas).forEach(regionKey => {
+                const area = originalAreas[regionKey];
+                const areaElement = document.createElement('div');
+                
+                areaElement.className = 'clickable-area';
+                areaElement.setAttribute('data-region', regionKey);
+                areaElement.setAttribute('title', getRegionTitle(regionKey));
+                
+                // Calcular posición y tamaño basado en las dimensiones actuales de la imagen
+                const left = area.x * img.clientWidth;
+                const top = area.y * img.clientHeight;
+                const width = area.width * img.clientWidth;
+                const height = area.height * img.clientHeight;
+                
+                areaElement.style.left = left + 'px';
+                areaElement.style.top = top + 'px';
+                areaElement.style.width = width + 'px';
+                areaElement.style.height = height + 'px';
+                
+                // Eventos
+                areaElement.addEventListener('click', function() {
+                    openModal(regionKey);
+                });
+                
+                areaElement.addEventListener('mouseenter', function(e) {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.textContent = getRegionTitle(regionKey);
+                    tooltip.style.opacity = '1';
+                });
+                
+                areaElement.addEventListener('mousemove', function(e) {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.style.left = e.pageX + 10 + 'px';
+                    tooltip.style.top = e.pageY - 30 + 'px';
+                });
+                
+                areaElement.addEventListener('mouseleave', function() {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.style.opacity = '0';
+                });
+                
+                wrapper.appendChild(areaElement);
+                clickableAreas.push({ element: areaElement, region: regionKey });
+            });
+        }
+
+        function getRegionTitle(regionKey) {
+            const titles = {
+                cervicales: 'Vértebras Cervicales (C1-C7)',
+                toracicas: 'Vértebras Torácicas (T1-T12)',
+                lumbares: 'Vértebras Lumbares (L1-L5)',
+                sacras: 'Vértebras Sacras',
+                coccix: 'Cóccix (Vértebras Coccígeas)'
+            };
+            return titles[regionKey] || regionKey;
+        }
+
+        // Modal functionality
+        function openModal(regionKey) {
+            const modal = document.getElementById('vertebralModal');
+            const data = regionData[regionKey];
+            
+            if (data) {
+                document.getElementById('modalTitle').textContent = data.title;
+                document.getElementById('modalImage').src = data.image;
+                document.getElementById('modalText').innerHTML = data.content;
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('vertebralModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Back button functionality
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('vertebralModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Initialize everything when page loads
+        window.addEventListener('load', function() {
+            createClickableAreas();
+        });
+
+        // Recalculate areas on window resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(createClickableAreas, 100);
+        });
+
+        // Handle image load
+        document.getElementById('spineImage').addEventListener('load', createClickableAreas);
+    </script>
+</body>
+</html>

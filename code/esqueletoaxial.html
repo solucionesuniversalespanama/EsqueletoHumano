@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esqueleto Axial - Anatomía Interactiva</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .image-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+        }
+
+        /* Áreas clickeables superpuestas - Completamente transparentes */
+        .clickable-area {
+            position: absolute;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            background-color: transparent;
+        }
+
+        .clickable-area:hover {
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .clickable-area::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .clickable-area:hover::after {
+            opacity: 1;
+        }
+
+        /* Coordenadas responsivas convertidas de píxeles a porcentajes */
+        /* Imagen original: 758x1538 píxeles */
+        
+        /* Cabeza: coords="239,46,507,389" */
+        .area-cabeza {
+            top: 2.99%; /* 46/1538 * 100 */
+            left: 31.53%; /* 239/758 * 100 */
+            width: 35.36%; /* (507-239)/758 * 100 */
+            height: 22.3%; /* (389-46)/1538 * 100 */
+        }
+
+        /* Columna: coords="279,400,479,1538" */
+        .area-columna {
+            top: 26.01%; /* 400/1538 * 100 */
+            left: 36.81%; /* 279/758 * 100 */
+            width: 26.39%; /* (479-279)/758 * 100 */
+            height: 73.99%; /* (1538-400)/1538 * 100 */
+        }
+
+        /* Caja Torácica: coords="184,1156,363,977,596,1154,643,875,603,712,513,541,380,582,259,517,129,733,127,1000" */
+        .area-caja-toraxica {
+            top: 33.61%; /* 517/1538 * 100 (punto más alto) */
+            left: 16.89%; /* 127/758 * 100 (punto más a la izquierda) */
+            width: 68.07%; /* (643-127)/758 * 100 */
+            height: 41.48%; /* (1156-517)/1538 * 100 */
+            clip-path: polygon(
+                11.24% 82.84%, /* 184,1156 convertido a % relativos al área */
+                45.74% 71.05%, /* 363,977 */
+                76.74% 82.72%, /* 596,1154 */
+                100% 55.23%, /* 643,875 */
+                92.25% 30.11%, /* 603,712 */
+                74.81% 3.92%, /* 513,541 */
+                49.03% 10.61%, /* 380,582 */
+                25.58% 0%, /* 259,517 */
+                0.39% 33.33%, /* 129,733 */
+                0% 74.51% /* 127,1000 */
+            );
+        }
+
+        .sidebar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            border-color: #667eea;
+        }
+        
+        .card-image {
+            width: 70px;
+            height: 70px;
+            background-color: #f0f4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .card-image img {
+            max-width: 80%;
+            max-height: 80%;
+        }
+
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .info-card p {
+            color: #666;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .navigation {
+            margin-top: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        .modal h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .modal p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .modal ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .modal li {
+            margin-bottom: 8px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                padding: 20px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+            }
+        }
+
+        /* Indicador visual para mostrar áreas interactivas */
+        .show-areas .clickable-area {
+            border-color: rgba(102, 126, 234, 0.5);
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        .toggle-areas {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 10;
+        }
+        
+        /* Nuevos estilos para el menú de navegación */
+        .section-nav {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section-nav h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .section-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .section-btn {
+            background: #f0f4ff;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-btn:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Esqueleto Axial</h1>
+            <p>Explora las diferentes partes del esqueleto axial haciendo clic en las áreas señaladas</p>
+        </div>
+
+        <div class="main-content">
+            <div class="image-section">
+                <button class="toggle-areas" onclick="toggleAreas()">Mostrar/Ocultar Áreas</button>
+                <div class="image-container" id="imageContainer">
+                    <!-- Imagen del esqueleto axial -->
+                    <img src="images/esqueletoaxialpartefrontal.jpeg" alt="Esqueleto Axial" class="main-image" id="mainImage">
+                    
+                    <!-- Áreas clickeables superpuestas -->
+                    <div class="clickable-area area-cabeza" 
+                         data-tooltip="Cabeza - Cráneo" 
+                         onclick="openModal('cabezaModal')"></div>
+                    
+                    <div class="clickable-area area-columna" 
+                         data-tooltip="Columna Vertebral" 
+                         onclick="openModal('columnaModal')"></div>
+                    
+                    <div class="clickable-area area-caja-toraxica" 
+                         data-tooltip="Caja Torácica" 
+                         onclick="openModal('cajaToraxicaModal')"></div>
+                </div>
+                
+                <!-- Menú de navegación para secciones -->
+                <div class="section-nav">
+                    <h2>Acceder a secciones específicas</h2>
+                    <div class="section-buttons">
+                        <button class="section-btn" onclick="navigateToSection('cabeza')">
+                            <span>📚</span> Cabeza
+                        </button>
+                        <button class="section-btn" onclick="navigateToSection('columna')">
+                            <span>📚</span> Columna
+                        </button>
+                        <button class="section-btn" onclick="navigateToSection('torax')">
+                            <span>📚</span> Caja Torácica
+                        </button>
+                        <button class="section-btn" onclick="navigateToSection('frontal')">
+                            <span>📚</span> Parte Frontal
+                        </button>
+                        <button class="section-btn" onclick="navigateToSection('trasera')">
+                            <span>📚</span> Parte Trasera
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="info-card" onclick="navigateToSection('frontal')">
+                    <div class="card-image">
+                        <img src="images/esqueletoaxialpartefrontal.jpeg" alt="Frontal">
+                    </div>
+                    <h3>Parte Frontal</h3>
+                    <p>Vista anterior del esqueleto axial mostrando estructuras frontales</p>
+                </div>
+
+                <div class="info-card" onclick="navigateToSection('trasera')">
+                    <div class="card-image">
+                        <img src="images/esqueletoaxialtrasero.jpeg" alt="Trasera">
+                    </div>
+                    <h3>Parte Trasera</h3>
+                    <p>Vista posterior del esqueleto axial y estructuras dorsales</p>
+                </div>
+
+                <div class="info-card" onclick="navigateToSection('cabeza')">
+                    <div class="card-image">
+                        <img src="images/cabeza.jpg" alt="Cabeza">
+                    </div>
+                    <h3>Cabeza</h3>
+                    <p>Cráneo y estructuras óseas cefálicas</p>
+                </div>
+
+                <div class="info-card" onclick="navigateToSection('columna')">
+                    <div class="card-image">
+                        <img src="images/columna.png" alt="Columna">
+                    </div>
+                    <h3>Columna</h3>
+                    <p>Columna vertebral y sus diferentes regiones</p>
+                </div>
+
+                <div class="info-card" onclick="navigateToSection('torax')" style="grid-column: 1 / -1;">
+                    <div class="card-image">
+                        <img src="images/cage-thoracique-esp.webp" alt="Caja Torácica">
+                    </div>
+                    <h3>Caja Torácica</h3>
+                    <p>Costillas, esternón y estructuras torácicas</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="btn" onclick="goBack()">← Regresar</button>
+            <button class="btn" onclick="goToHome()">🏠 Página Principal</button>
+        </div>
+    </div>
+
+    <!-- Modales de información -->
+    <div id="cabezaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('cabezaModal')">&times;</span>
+            <h2>Cabeza - Cráneo</h2>
+            <p>El cráneo es la estructura ósea que protege el encéfalo y forma la cabeza. Está compuesto por varios huesos que se dividen en dos grupos principales:</p>
+            <ul>
+                <li><strong>Neurocráneo:</strong> Protege el cerebro (frontal, parietal, temporal, occipital, esfenoides, etmoides)</li>
+                <li><strong>Viscerocráneo:</strong> Forma la cara (maxilar, mandíbula, cigomático, nasal, etc.)</li>
+            </ul>
+            <p>Funciones principales:</p>
+            <ul>
+                <li>Protección del sistema nervioso central</li>
+                <li>Soporte para órganos de los sentidos</li>
+                <li>Formación de las cavidades nasales y orbitarias</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="columnaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('columnaModal')">&times;</span>
+            <h2>Columna Vertebral</h2>
+            <p>La columna vertebral es la estructura central del esqueleto axial, compuesta por 33-34 vértebras que se dividen en cinco regiones:</p>
+            <ul>
+                <li><strong>Cervical:</strong> 7 vértebras (C1-C7) - Cuello</li>
+                <li><strong>Torácica:</strong> 12 vértebras (T1-T12) - Tórax</li>
+                <li><strong>Lumbar:</strong> 5 vértebras (L1-L5) - Región baja de la espalda</li>
+                <li><strong>Sacra:</strong> 5 vértebras fusionadas - Sacro</li>
+                <li><strong>Coccígea:</strong> 4-5 vértebras fusionadas - Cóccix</li>
+            </ul>
+            <p>Funciones:</p>
+            <ul>
+                <li>Protección de la médula espinal</li>
+                <li>Soporte estructural del cuerpo</li>
+                <li>Permite la movilidad del tronco</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="cajaToraxicaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('cajaToraxicaModal')">&times;</span>
+            <h2>Caja Torácica</h2>
+            <p>La caja torácica protege los órganos vitales del tórax y está formada por:</p>
+            <ul>
+                <li><strong>Costillas:</strong> 12 pares
+                    <ul>
+                        <li>Verdaderas (1-7): Se conectan directamente al esternón</li>
+                        <li>Falsas (8-10): Se conectan indirectamente al esternón</li>
+                        <li>Flotantes (11-12): No se conectan al esternón</li>
+                    </ul>
+                </li>
+                <li><strong>Esternón:</strong> Hueso plano en el centro del pecho</li>
+                <li><strong>Cartílagos costales:</strong> Conectan las costillas al esternón</li>
+            </ul>
+            <p>Funciones principales:</p>
+            <ul>
+                <li>Protección de corazón y pulmones</li>
+                <li>Participación en la respiración</li>
+                <li>Inserción de músculos respiratorios</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Funciones para los modales
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Función para mostrar/ocultar áreas interactivas
+        function toggleAreas() {
+            const container = document.getElementById('imageContainer');
+            container.classList.toggle('show-areas');
+        }
+
+        // Funciones de navegación
+        function navigateToSection(section) {
+            // Crear un objeto con las rutas de las páginas
+            const pageRoutes = {
+                'cabeza': 'cabeza.html',
+                'columna': 'columna.html',
+                'torax': 'cajatoracica.html',
+                'frontal': 'esqueletofrontalaxial.html',
+                'trasera': 'esqueletotraseroaxial.html',
+            };
+            
+            // Obtener la ruta correspondiente
+            const pagePath = pageRoutes[section];
+            
+            if (pagePath) {
+                // Redirigir a la página específica
+                window.location.href = pagePath;
+            } else {
+                // En caso de sección no reconocida
+                console.error(`Sección no reconocida: ${section}`);
+                alert('La página solicitada no está disponible');
+            }
+        }
+
+        function goBack() {
+           window.location.href = '../index.html';
+        }
+
+        function goToHome() {
+            window.location.href = '../index.html';
+
+        }
+
+        // Funciones para ajustar áreas si es necesario
+        function adjustAreas() {
+            // Esta función podría usarse para ajustes finos si las coordenadas necesitan calibración
+            const image = document.getElementById('mainImage');
+            const areas = document.querySelectorAll('.clickable-area');
+            
+            // Aquí podrías implementar ajustes automáticos basados en el tamaño real de la imagen
+            console.log('Imagen cargada:', image.naturalWidth, 'x', image.naturalHeight);
+            console.log('Imagen mostrada:', image.offsetWidth, 'x', image.offsetHeight);
+        }
+
+        // Cargar ajustes cuando la imagen esté lista
+        document.getElementById('mainImage').addEventListener('load', adjustAreas);
+
+        // Efectos visuales adicionales
+        document.querySelectorAll('.clickable-area').forEach(area => {
+            area.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+            });
+            
+            area.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar áreas brevemente al cargar para que el usuario las vea
+            setTimeout(() => {
+                document.getElementById('imageContainer').classList.add('show-areas');
+                setTimeout(() => {
+                    document.getElementById('imageContainer').classList.remove('show-areas');
+                }, 2000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

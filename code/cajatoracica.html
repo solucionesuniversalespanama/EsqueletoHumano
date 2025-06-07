@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caja Torácica - Anatomía Interactiva</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background: white;
+            color: #2c3e50;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .content {
+            display: flex;
+            padding: 40px;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .main-image {
+            flex: 2;
+            position: relative;
+        }
+
+        .main-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+
+        .main-image img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Contenedor responsivo para el mapa de imagen */
+        .image-map-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* Áreas clicables responsivas */
+        .clickable-area {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            z-index: 2;
+        }
+
+        .clickable-area:hover {
+            border-color: #3498db;
+            background: rgba(52, 152, 219, 0.2);
+            transform: scale(1.02);
+        }
+
+        /* Posiciones basadas en las coordenadas originales (736x789) */
+        .area-esternon {
+            left: 60.33%;
+            top: 17.62%;
+            width: 16.71%;
+            height: 41.32%;
+        }
+
+        .area-vertebra {
+            left: 41.71%;
+            top: 71.48%;
+            width: 22.01%;
+            height: 27.25%;
+        }
+
+        .area-costillas {
+            left: 20.65%;
+            top: 15.21%;
+            width: 37.23%;
+            height: 70.09%;
+        }
+
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .anatomy-card {
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .anatomy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            border-color: #3498db;
+        }
+
+        .anatomy-card.esternon:hover {
+            border-color: #4facfe;
+        }
+
+        .anatomy-card.vertebra:hover {
+            border-color: #43e97b;
+        }
+
+        .anatomy-card.costillas:hover {
+            border-color: #fa709a;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .anatomy-card:hover .card-image {
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            text-transform: capitalize;
+        }
+
+        .card-content p {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 0;
+            border: none;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            font-size: 2rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .close {
+            color: white;
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .modal-body {
+            padding: 30px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+        }
+
+        .modal-image-container {
+            flex: 1;
+            text-align: center;
+        }
+
+        .modal-image {
+            width: 100%;
+            max-width: 300px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 3px solid #e0e0e0;
+            transition: transform 0.3s ease;
+        }
+
+        .modal-image:hover {
+            transform: scale(1.05);
+        }
+
+        .modal-info {
+            flex: 1;
+            padding-left: 20px;
+        }
+
+        .modal-info h3 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .modal-info p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .modal-info ul {
+            margin-left: 20px;
+            color: #666;
+        }
+
+        .modal-info li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .back-button {
+                position: static;
+                transform: none;
+                margin-bottom: 20px;
+                display: inline-block;
+            }
+            
+            .sidebar {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 15px;
+                padding-bottom: 10px;
+            }
+
+            .anatomy-card {
+                min-width: 200px;
+                flex-shrink: 0;
+            }
+
+            .card-image {
+                height: 100px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+
+            .modal-body {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .modal-info {
+                padding-left: 0;
+                padding-top: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                flex-direction: column;
+            }
+
+            .anatomy-card {
+                min-width: unset;
+            }
+
+            .modal-header h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Efectos visuales adicionales */
+        .clickable-area::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .clickable-area:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Indicador visual para las áreas */
+        .area-indicator {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #3498db;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse-indicator 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse-indicator {
+            0% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+            100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="#" class="back-button" onclick="goBack()">← Regresar</a>
+            <h1>Caja Torácica</h1>
+            <p>Anatomía Interactiva - Haz clic en las partes para aprender</p>
+        </div>
+
+        <div class="content">
+            <div class="main-image">
+                <div class="image-map-container">
+                    <img src="images/cajatoracica.jpeg" 
+                         alt="Caja Torácica" 
+                         id="main-anatomy-image">
+                    
+                    <!-- Áreas clicables responsivas con indicadores -->
+                    <div class="clickable-area area-esternon" 
+                         title="Esternón" 
+                         onclick="openModal('esternon')"
+                         data-label="Esternón">
+                        <div class="area-indicator"></div>
+                    </div>
+                    
+                    <div class="clickable-area area-vertebra" 
+                         title="Columna Vertebral Torácica" 
+                         onclick="openModal('vertebra')"
+                         data-label="Columna Vertebral">
+                        <div class="area-indicator"></div>
+                    </div>
+                    
+                    <div class="clickable-area area-costillas" 
+                         title="Costillas" 
+                         onclick="openModal('costillas')"
+                         data-label="Costillas">
+                        <div class="area-indicator"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="anatomy-card esternon" onclick="navigateToPage('esternon.html')">
+                    <img src="images/esternon.png" 
+                         alt="Esternón" 
+                         class="card-image">
+                    <div class="card-content">
+                        <h3>Esternón</h3>
+                        <p>Hueso plano del centro del tórax</p>
+                    </div>
+                </div>
+
+                <div class="anatomy-card vertebra" onclick="navigateToPage('columnavertebraltoraxica.html')">
+                    <img src="images/vertebratoraxica.jpeg" 
+                         alt="Columna Vertebral Torácica" 
+                         class="card-image">
+                    <div class="card-content">
+                        <h3>Columna Vertebral</h3>
+                        <p>12 vértebras que forman la columna dorsal</p>
+                    </div>
+                </div>
+
+                <div class="anatomy-card costillas" onclick="navigateToPage('costillas.html')">
+                    <img src="images/Costillas.png" 
+                         alt="Costillas" 
+                         class="card-image">
+                    <div class="card-content">
+                        <h3>Costillas</h3>
+                        <p>24 costillas que protegen los órganos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <!-- Modal Esternón -->
+    <div id="modal-esternon" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Esternón</h2>
+                <span class="close" onclick="closeModal('esternon')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img src="images/esternon.png" 
+                         alt="Esternón" 
+                         class="modal-image">
+                </div>
+                <div class="modal-info">
+                    <h3>Información del Esternón</h3>
+                    <p>El esternón es un hueso plano y alargado ubicado en la parte central del tórax. Forma parte de la pared anterior de la caja torácica.</p>
+                    <p><strong>Características principales:</strong></p>
+                    <ul>
+                        <li>Se divide en tres partes: manubrio, cuerpo y apéndice xifoides</li>
+                        <li>Sirve como punto de inserción para las costillas</li>
+                        <li>Protege el corazón y los grandes vasos</li>
+                        <li>Participa en la respiración</li>
+                        <li>Contiene médula ósea productora de células sanguíneas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Columna Vertebral -->
+    <div id="modal-vertebra" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Columna Vertebral Torácica</h2>
+                <span class="close" onclick="closeModal('vertebra')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img src="images/vertebratoraxica.jpeg" 
+                         alt="Columna Vertebral Torácica" 
+                         class="modal-image">
+                </div>
+                <div class="modal-info">
+                    <h3>Información de la Columna Vertebral Torácica</h3>
+                    <p>La columna vertebral torácica está compuesta por 12 vértebras (T1-T12) que forman la parte posterior de la caja torácica.</p>
+                    <p><strong>Características principales:</strong></p>
+                    <ul>
+                        <li>Cada vértebra se articula con un par de costillas</li>
+                        <li>Presenta una curvatura natural hacia atrás (cifosis)</li>
+                        <li>Protege la médula espinal</li>
+                        <li>Proporciona soporte estructural al tórax</li>
+                        <li>Permite movimientos limitados pero controlados</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Costillas -->
+    <div id="modal-costillas" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Costillas</h2>
+                <span class="close" onclick="closeModal('costillas')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img src="images/Costillas.png" 
+                         alt="Costillas" 
+                         class="modal-image">
+                </div>
+                <div class="modal-info">
+                    <h3>Información de las Costillas</h3>
+                    <p>Las costillas son huesos curvados que forman la estructura lateral de la caja torácica. Tenemos 12 pares de costillas (24 en total).</p>
+                    <p><strong>Tipos de costillas:</strong></p>
+                    <ul>
+                        <li><strong>Verdaderas (1-7):</strong> Se conectan directamente al esternón</li>
+                        <li><strong>Falsas (8-10):</strong> Se conectan indirectamente al esternón</li>
+                        <li><strong>Flotantes (11-12):</strong> Solo se conectan a las vértebras</li>
+                        <li>Protegen los órganos vitales del tórax</li>
+                        <li>Participan activamente en la respiración</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para las tarjetas laterales (mantiene la funcionalidad original)
+        function navigateToPage(htmlFile) {
+            window.location.href = htmlFile;
+        }
+
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                alert('No hay página anterior para regresar');
+            }
+        }
+
+        // Funciones para los modales
+        function openModal(type) {
+            document.getElementById('modal-' + type).style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+        }
+
+        function closeModal(type) {
+            document.getElementById('modal-' + type).style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restaurar scroll del body
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Cerrar modal con la tecla Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
+        });
+
+        // Efecto de hover mejorado para las áreas clicables
+        document.querySelectorAll('.clickable-area').forEach(area => {
+            area.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.zIndex = '10';
+                
+                // Mostrar tooltip con el nombre del área
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.textContent = this.getAttribute('data-label');
+                tooltip.style.cssText = `
+                    position: absolute;
+                    background: rgba(0,0,0,0.8);
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    pointer-events: none;
+                    z-index: 1000;
+                    top: -30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    white-space: nowrap;
+                `;
+                this.appendChild(tooltip);
+            });
+            
+            area.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.zIndex = '2';
+                
+                // Remover tooltip
+                const tooltip = this.querySelector('.tooltip');
+                if (tooltip) {
+                    tooltip.remove();
+                }
+            });
+        });
+
+        // Efecto de click visual
+        document.querySelectorAll('.clickable-area, .anatomy-card').forEach(element => {
+            element.addEventListener('click', function(e) {
+                // Crear efecto de ondas al hacer click
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(52, 152, 219, 0.6)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.left = (e.offsetX - 10) + 'px';
+                ripple.style.top = (e.offsetY - 10) + 'px';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                ripple.style.pointerEvents = 'none';
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Añadir la animación de ripple al CSS dinámicamente
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Verificar cuando la imagen esté completamente cargada
+        document.getElementById('main-anatomy-image').addEventListener('load', function() {
+            console.log('Imagen cargada correctamente');
+        });
+
+        // Debugging: mostrar las coordenadas al hacer click
+        document.getElementById('main-anatomy-image').addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const percentX = (x / rect.width * 100).toFixed(2);
+            const percentY = (y / rect.height * 100).toFixed(2);
+            console.log(`Click en: ${x.toFixed(0)}, ${y.toFixed(0)} (${percentX}%, ${percentY}%)`);
+        });
+    </script>
+</body>
+</html>
