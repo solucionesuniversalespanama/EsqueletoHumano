@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esqueleto Apendicular</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .main-content {
+            display: flex;
+            gap: 20px;
+            padding: 30px;
+            align-items: flex-start;
+        }
+
+        .image-section {
+            flex: 2;
+            position: relative;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            border: 3px solid #34495e;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .mapped-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .sidebar {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column; /* Apila los elementos verticalmente */
+            align-items: center; /* Centra horizontalmente */
+            justify-content: center; /* Centra verticalmente */
+            min-height: 180px; /* Altura ajustada para imagen y texto */
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        }
+        
+        /* --- NUEVOS ESTILOS PARA LA IMAGEN EN LA TARJETA --- */
+        .info-card img {
+            max-width: 90px;
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 15px; /* Espacio entre la imagen y el texto */
+            background: rgba(255,255,255,0.2);
+            padding: 5px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .info-card .card-text {
+            color: white;
+            font-weight: bold;
+        }
+        /* --- FIN DE NUEVOS ESTILOS --- */
+
+
+        .info-card:nth-child(1) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .info-card:nth-child(2) {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .info-card:nth-child(3) {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .info-card:nth-child(4) {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+            animation: slideDown 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #e74c3c;
+        }
+
+        .modal h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .modal p {
+            line-height: 1.6;
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                grid-template-columns: 1fr 1fr; /* Mantenemos 2 columnas en tablet */
+                margin-top: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+                margin-top: 40px;
+            }
+
+            .back-btn {
+                position: static;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .sidebar {
+                grid-template-columns: 1fr; /* 1 columna en moviles */
+            }
+        }
+
+
+        /* Image map responsive */
+        .image-map-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="#" class="back-btn" onclick="goBack()">← Regresar</a>
+            <h1>Esqueleto Apendicular</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="image-section">
+                <div class="image-container">
+                    <div class="image-map-container">
+                        <img src="../images/esqueleto apendicular.jpg" 
+                             alt="Esqueleto Apendicular" 
+                             class="mapped-image" 
+                             usemap="#image-map"
+                             id="mappedImage">
+                        <map name="image-map" id="imageMap">
+                            <area target="" 
+                                  alt="cintura escapular" 
+                                  title="cintura escapular" 
+                                  href="#" 
+                                  coords="485,169,838,451" 
+                                  shape="rect"
+                                  onclick="showModal('cintura-escapular'); return false;">
+                            <area target="" 
+                                  alt="miembros superiores" 
+                                  title="miembros superiores" 
+                                  href="#" 
+                                  coords="466,181,432,209,349,570,296,870,239,977,300,1091,391,1034,375,886,419,618,459,584,439,534" 
+                                  shape="poly"
+                                  onclick="showModal('miembros-superiores'); return false;">
+                            <area target="" 
+                                  alt="cintura pelviana" 
+                                  title="cintura pelviana" 
+                                  href="#" 
+                                  coords="464,694,860,694,813,852,765,957,566,964" 
+                                  shape="poly"
+                                  onclick="showModal('cintura-pelviana'); return false;">
+                            <area target="" 
+                                  alt="miembros inferiores" 
+                                  title="miembros inferiores" 
+                                  href="#" 
+                                  coords="515,862,561,980,760,984,830,853,874,902,832,1316,821,1898,912,2011,419,2023,511,1857,461,963,476,873" 
+                                  shape="poly"
+                                  onclick="showModal('miembros-inferiores'); return false;">
+                        </map>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="info-card" onclick="window.location.href='cinturaescapular.html'">
+                    <img src="../images/cinturaescapular.jpg" alt="Cintura Escapular">
+                    <div class="card-text">Cintura Escapular</div>
+                </div>
+                <div class="info-card" onclick="window.location.href='miembrosuperior.html'">
+                    <img src="../images/miembrosuperior.jpg" alt="Miembros Superiores">
+                    <div class="card-text">Miembros Superiores</div>
+                </div>
+                <div class="info-card" onclick="window.location.href='huesocoxales.html'">
+                    <img src="../images/cinturapelviana.png" alt="Cintura Pelviana">
+                    <div class="card-text">Cintura Pelviana</div>
+                </div>
+                <div class="info-card" onclick="window.location.href='miembroinferior.html'">
+                    <img src="../images/miembroinferior.png" alt="Miembros Inferiores">
+                    <div class="card-text">Miembros Inferiores</div>
+                </div>
+            </div>
+             </div>
+    </div>
+
+    <div id="modal-cintura-escapular" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Cintura Escapular</h2>
+            <p><strong>Definición:</strong> La cintura escapular o pectoral está formada por la clavícula y la escápula (omóplato).</p>
+            <p><strong>Función:</strong> Conecta los miembros superiores con el tronco y proporciona el punto de anclaje para los músculos que mueven el brazo.</p>
+            <p><strong>Componentes:</strong></p>
+            <p>• <strong>Clavícula:</strong> Hueso en forma de "S" que se articula con el esternón y el acromion.</p>
+            <p>• <strong>Escápula:</strong> Hueso triangular plano que se desliza sobre la pared torácica posterior.</p>
+        </div>
+    </div>
+
+    <div id="modal-miembros-superiores" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Miembros Superiores</h2>
+            <p><strong>Definición:</strong> Los miembros superiores incluyen el brazo, antebrazo y mano.</p>
+            <p><strong>Componentes principales:</strong></p>
+            <p>• <strong>Húmero:</strong> Hueso del brazo que se articula con la escápula proximalmente.</p>
+            <p>• <strong>Radio y Cúbito:</strong> Huesos del antebrazo que permiten los movimientos de pronación y supinación.</p>
+            <p>• <strong>Huesos de la mano:</strong> Carpo (muñeca), metacarpo y falanges (dedos).</p>
+            <p><strong>Función:</strong> Permiten una amplia gama de movimientos para la manipulación de objetos.</p>
+        </div>
+    </div>
+
+    <div id="modal-cintura-pelviana" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Cintura Pelviana</h2>
+            <p><strong>Definición:</strong> La cintura pélvica está formada por los huesos coxales (ilion, isquion y pubis fusionados).</p>
+            <p><strong>Función:</strong> Conecta los miembros inferiores con la columna vertebral y soporta el peso del cuerpo.</p>
+            <p><strong>Características:</strong></p>
+            <p>• Forma la pelvis junto con el sacro y el cóccix.</p>
+            <p>• Proporciona inserción para músculos importantes de la locomoción.</p>
+            <p>• Protege órganos pélvicos internos.</p>
+        </div>
+    </div>
+
+    <div id="modal-miembros-inferiores" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Miembros Inferiores</h2>
+            <p><strong>Definición:</strong> Los miembros inferiores incluyen el muslo, pierna y pie.</p>
+            <p><strong>Componentes principales:</strong></p>
+            <p>• <strong>Fémur:</strong> Hueso más largo y fuerte del cuerpo, ubicado en el muslo.</p>
+            <p>• <strong>Tibia y Peroné:</strong> Huesos de la pierna, siendo la tibia el principal soporte de peso.</p>
+            <p>• <strong>Huesos del pie:</strong> Tarso, metatarso y falanges.</p>
+            <p><strong>Función:</strong> Soportan el peso corporal y permiten la locomoción bípeda.</p>
+        </div>
+    </div>
+
+    <script>
+        // Responsive image map
+        function resizeImageMap() {
+            const img = document.getElementById('mappedImage');
+            const map = document.getElementById('imageMap');
+            const areas = map.getElementsByTagName('area');
+            
+            // Get original image dimensions (you should replace these with your actual image dimensions)
+            const originalWidth = 1200; // Replace with your image's original width
+            const originalHeight = 2000; // Replace with your image's original height
+            
+            const currentWidth = img.clientWidth;
+            const currentHeight = img.clientHeight;
+            
+            const scaleX = currentWidth / originalWidth;
+            const scaleY = currentHeight / originalHeight;
+            
+            for (let i = 0; i < areas.length; i++) {
+                const coords = areas[i].dataset.originalCoords || areas[i].getAttribute('coords');
+                if (!areas[i].dataset.originalCoords) {
+                    areas[i].dataset.originalCoords = coords;
+                }
+                
+                const coordsArray = coords.split(',');
+                const newCoords = [];
+                
+                for (let j = 0; j < coordsArray.length; j += 2) {
+                    newCoords.push(Math.round(coordsArray[j] * scaleX));
+                    newCoords.push(Math.round(coordsArray[j + 1] * scaleY));
+                }
+                
+                areas[i].setAttribute('coords', newCoords.join(','));
+            }
+        }
+
+        // Modal functionality
+        function showModal(modalId) {
+            document.getElementById('modal-' + modalId).style.display = 'block';
+        }
+
+        function closeModal(modal) {
+            modal.style.display = 'none';
+        }
+
+        // Back button functionality
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                alert('No hay página anterior para regresar');
+            }
+        }
+
+        // Event listeners
+        window.addEventListener('load', function() {
+            resizeImageMap();
+        });
+
+        window.addEventListener('resize', function() {
+            resizeImageMap();
+        });
+
+        // Close modal when clicking on close button or outside modal
+        window.addEventListener('click', function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let modal of modals) {
+                if (event.target === modal || event.target.classList.contains('close')) {
+                    closeModal(modal);
+                }
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modals = document.getElementsByClassName('modal');
+                for (let modal of modals) {
+                    if (modal.style.display === 'block') {
+                        closeModal(modal);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

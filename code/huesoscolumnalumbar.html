@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomía de la Columna Lumbar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding-top: 20px;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .image-container {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .main-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 1px solid #ddd;
+        }
+
+        .main-image:hover {
+            transform: scale(1.02);
+        }
+
+        .bone-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .bone-button {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bone-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+            background: linear-gradient(135deg, #3a9df5 0%, #00d9e9 100%);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .fullscreen-modal {
+            background-color: rgba(0,0,0,0.95);
+        }
+
+        .fullscreen-content {
+            margin: 0;
+            padding: 20px;
+            width: 100%;
+            max-width: none;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fullscreen-image {
+            max-width: 90%;
+            max-height: 80%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #ff6b6b;
+        }
+
+        .modal h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .bone-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-button" onclick="goBack()">← Regresar</button>
+            <h1>Partes de la Columna Lumbar</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="image-container">
+                <!-- Cambia esta ruta por tu imagen principal -->
+                <img src="images/partescolumnalumbar.jpg" 
+                     alt="Columna Lumbar" 
+                     class="main-image" 
+                     onclick="openFullscreen(this)">
+            </div>
+
+            <div class="bone-buttons">
+                <button class="bone-button" onclick="openModal('l1')">Vértebra L1</button>
+                <button class="bone-button" onclick="openModal('l2')">Vértebra L2</button>
+                <button class="bone-button" onclick="openModal('l3')">Vértebra L3</button>
+                <button class="bone-button" onclick="openModal('l4')">Vértebra L4</button>
+                <button class="bone-button" onclick="openModal('l5')">Vértebra L5</button>
+            </div>
+
+           
+        </div>
+    </div>
+
+    <!-- Modal para información detallada -->
+    <div id="boneModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <img id="modalImage" class="modal-image" src="" alt="">
+            <div id="modalDescription" class="modal-description"></div>
+        </div>
+    </div>
+
+    <!-- Modal para pantalla completa -->
+    <div id="fullscreenModal" class="modal fullscreen-modal">
+        <div class="fullscreen-content">
+            <button class="close" onclick="closeFullscreen()" style="position: absolute; top: 20px; right: 30px; background: rgba(255,255,255,0.8); border: none; padding: 10px 15px; border-radius: 50%; font-size: 20px;">×</button>
+            <img id="fullscreenImage" class="fullscreen-image" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        // AQUÍ ES DONDE CAMBIAS LAS RUTAS DE LAS IMÁGENES
+        // Reemplaza estas rutas con las rutas reales de tus imágenes
+        const vertebraeData = {
+            l1: {
+                title: "Vértebra L1 - Primera Vértebra Lumbar",
+                image: "images/l1.jpg", // CAMBIA ESTA RUTA
+                description: "La primera vértebra lumbar (L1) es la vértebra más superior de la región lumbar. Se caracteriza por: tener un cuerpo vertebral más grande que las vértebras torácicas, procesos transversos más desarrollados, y marca la transición entre la columna torácica y lumbar. Es el sitio donde termina la médula espinal y comienza la cola de caballo (cauda equina). Su posición anatómica la sitúa aproximadamente a la altura de la 12ª costilla."
+            },
+            l2: {
+                title: "Vértebra L2 - Segunda Vértebra Lumbar",
+                image: "images/l2.jpg", // CAMBIA ESTA RUTA
+                description: "La segunda vértebra lumbar (L2) se ubica en la parte superior de la región lumbar. Sus características incluyen: un cuerpo vertebral robusto que soporta el peso de la parte superior del cuerpo, láminas gruesas y fuertes, procesos espinosos rectangulares y horizontales. A este nivel, las raíces nerviosas que emergen forman parte importante del plexo lumbar. Es fundamental para la estabilidad de la columna y la distribución de cargas."
+            },
+            l3: {
+                title: "Vértebra L3 - Tercera Vértebra Lumbar",
+                image: "images/L3.jpg", // CAMBIA ESTA RUTA
+                description: "La tercera vértebra lumbar (L3) ocupa una posición central en la región lumbar. Se caracteriza por: tener el cuerpo vertebral más ancho en sentido transversal, procesos transversos largos y delgados, y ser un punto de referencia anatómico importante. A este nivel se encuentra aproximadamente la línea que une las crestas ilíacas. Los nervios que emergen a este nivel inervan importantes músculos de la extremidad inferior y participan en reflejos como el rotuliano."
+            },
+            l4: {
+                title: "Vértebra L4 - Cuarta Vértebra Lumbar",
+                image: "images/L4.jpg", // CAMBIA ESTA RUTA
+                description: "La cuarta vértebra lumbar (L4) es una de las vértebras que más peso soporta en la columna vertebral. Sus características distintivas incluyen: un cuerpo vertebral muy robusto y ancho, pedículos gruesos y cortos, y procesos articulares bien desarrollados. Es un sitio común de patología degenerativa debido a las fuerzas mecánicas que actúan sobre ella. El disco intervertebral L4-L5 es frecuentemente afectado por hernias discales. Las raíces nerviosas L4 son cruciales para la función del músculo cuádriceps."
+            },
+            l5: {
+                title: "Vértebra L5 - Quinta Vértebra Lumbar",
+                image: "images/L5.jpg", // CAMBIA ESTA RUTA
+                description: "La quinta vértebra lumbar (L5) es la última vértebra de la región lumbar y presenta características únicas. Su cuerpo vertebral es el más grande de todas las vértebras lumbares, con forma de cuña (más alto anteriormente). Se articula con el sacro formando la articulación lumbosacra, que permite una gran movilidad pero también es sitio de gran estrés mecánico. Es frecuente sitio de espondilolistesis y otros problemas degenerativos. Las raíces nerviosas L5 son fundamentales para la función de los músculos dorsiflexores del pie."
+            }
+        };
+
+        function openModal(vertebra) {
+            const modal = document.getElementById('boneModal');
+            const data = vertebraeData[vertebra];
+            
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalImage').src = data.image;
+            document.getElementById('modalDescription').textContent = data.description;
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('boneModal').style.display = 'none';
+        }
+
+        function openFullscreen(img) {
+            const modal = document.getElementById('fullscreenModal');
+            const fullscreenImg = document.getElementById('fullscreenImage');
+            
+            fullscreenImg.src = img.src;
+            modal.style.display = 'block';
+        }
+
+        function closeFullscreen() {
+            document.getElementById('fullscreenModal').style.display = 'none';
+        }
+
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                alert('No hay página anterior para regresar');
+            }
+        }
+
+        // Cerrar modales al hacer clic fuera de ellos
+        window.onclick = function(event) {
+            const boneModal = document.getElementById('boneModal');
+            const fullscreenModal = document.getElementById('fullscreenModal');
+            
+            if (event.target === boneModal) {
+                closeModal();
+            }
+            if (event.target === fullscreenModal) {
+                closeFullscreen();
+            }
+        }
+
+        // Cerrar modales con la tecla Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+                closeFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>

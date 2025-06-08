@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomía - Miembros Superiores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .back-btn::before {
+            content: '←';
+            font-size: 16px;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .image-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .anatomy-image {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .anatomy-image:hover {
+            transform: scale(1.02);
+        }
+
+        .info-panels {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .info-card.brazo {
+            border-left-color: #FF6B6B;
+        }
+
+        .info-card.antebrazo {
+            border-left-color: #4ECDC4;
+        }
+
+        .info-card.mano {
+            border-left-color: #45B7D1;
+        }
+
+        .info-card-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        .info-card-content {
+            flex: 1;
+        }
+
+        .info-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: capitalize;
+        }
+
+        .info-card p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .modal h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .modal p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .title {
+                font-size: 1.5rem;
+            }
+
+            .info-panels {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 1.5rem;
+            }
+
+            .info-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .info-card-image {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        .instruction {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-container">
+            <a href="#" class="back-btn" onclick="goBack()">Regresar</a>
+            <h1 class="title">Miembros Superiores</h1>
+            <div></div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="image-container">
+            <div class="image-wrapper">
+                <!-- Cambia esta URL por tu imagen real -->
+                <img src="../images/miembrosuperior.png" 
+                     alt="Miembros Superiores" 
+                     class="anatomy-image" 
+                     usemap="#anatomy-map" 
+                     id="anatomyImage">
+                
+                <map name="anatomy-map" id="anatomyMap">
+                    <area shape="poly" 
+                          coords="232,85,285,530,139,552,138,84" 
+                          alt="brazo" 
+                          title="brazo" 
+                          href="javascript:void(0)" 
+                          onclick="showModal('brazo')" 
+                          data-area="brazo">
+                    <area shape="poly" 
+                          coords="147,568,283,551,306,880,193,910" 
+                          alt="antebrazo" 
+                          title="antebrazo" 
+                          href="javascript:void(0)" 
+                          onclick="showModal('antebrazo')" 
+                          data-area="antebrazo">
+                    <area shape="poly" 
+                          coords="194,921,307,891,374,1128,277,1176,190,1110" 
+                          alt="mano" 
+                          title="mano" 
+                          href="javascript:void(0)" 
+                          onclick="showModal('mano')" 
+                          data-area="mano">
+                </map>
+            </div>
+            <div class="instruction">
+                Haz clic en las diferentes áreas de la imagen para obtener más información
+            </div>
+        </div>
+
+        <div class="info-panels">
+            <div class="info-card brazo" onclick="redirectTo('brazo.html')">
+                <!-- Cambia estas URLs por las imágenes reales del brazo -->
+                <img src="../images/brazo.jpeg" 
+                     alt="Brazo" 
+                     class="info-card-image">
+                <div class="info-card-content">
+                    <h3>Brazo</h3>
+                    <p>Información detallada sobre la anatomía del brazo, músculos principales y funciones específicas.</p>
+                </div>
+            </div>
+
+            <div class="info-card antebrazo" onclick="redirectTo('antebrazo.html')">
+                <img src="../images/antebrazo.jpeg" 
+                     alt="Antebrazo" 
+                     class="info-card-image">
+                <div class="info-card-content">
+                    <h3>Antebrazo</h3>
+                    <p>Explorar la estructura del antebrazo, huesos radio y cúbito, y músculos flexores y extensores.</p>
+                </div>
+            </div>
+
+            <div class="info-card mano" onclick="redirectTo('mano.html')">
+                <img src="../images/mano.jpeg" 
+                     alt="Mano" 
+                     class="info-card-image">
+                <div class="info-card-content">
+                    <h3>Mano</h3>
+                    <p>Anatomía completa de la mano, huesos carpianos, metacarpianos y falanges.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para información de áreas -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Información para el modal
+        const areaInfo = {
+            brazo: {
+                title: "Brazo",
+                content: `
+                    <p><strong>El brazo</strong> es la porción del miembro superior que se extiende desde el hombro hasta el codo.</p>
+                    <p><strong>Hueso principal:</strong> Húmero</p>
+                    <p><strong>Músculos principales:</strong></p>
+                    <p>• Bíceps braquial - flexión del codo</p>
+                    <p>• Tríceps braquial - extensión del codo</p>
+                    <p>• Deltoides - abducción del brazo</p>
+                    <p><strong>Función:</strong> Permite los movimientos de flexión y extensión del codo, así como la rotación del brazo.</p>
+                `
+            },
+            antebrazo: {
+                title: "Antebrazo",
+                content: `
+                    <p><strong>El antebrazo</strong> se encuentra entre el codo y la muñeca, formado por dos huesos paralelos.</p>
+                    <p><strong>Huesos:</strong> Radio (lateral) y Cúbito (medial)</p>
+                    <p><strong>Músculos principales:</strong></p>
+                    <p>• Músculos flexores - flexión de muñeca y dedos</p>
+                    <p>• Músculos extensores - extensión de muñeca y dedos</p>
+                    <p>• Músculos pronadores y supinadores - rotación del antebrazo</p>
+                    <p><strong>Función:</strong> Control fino de los movimientos de la mano y dedos.</p>
+                `
+            },
+            mano: {
+                title: "Mano",
+                content: `
+                    <p><strong>La mano</strong> es la estructura más compleja y versátil del miembro superior.</p>
+                    <p><strong>Huesos:</strong></p>
+                    <p>• 8 huesos carpianos (muñeca)</p>
+                    <p>• 5 metacarpianos (palma)</p>
+                    <p>• 14 falanges (dedos)</p>
+                    <p><strong>Músculos:</strong> Músculos intrínsecos para movimientos finos y precisos</p>
+                    <p><strong>Función:</strong> Prensión, manipulación de objetos, escritura y gestos complejos.</p>
+                `
+            }
+        };
+
+        // Variables para el mapeo responsivo
+        let originalImageWidth = null;
+        let originalImageHeight = null;
+        const originalCoords = {
+            brazo: [232,85,285,530,139,552,138,84],
+            antebrazo: [147,568,283,551,306,880,193,910],
+            mano: [194,921,307,891,374,1128,277,1176,190,1110]
+        };
+
+        // Función para mostrar el modal
+        function showModal(area) {
+            const modal = document.getElementById('infoModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            title.textContent = areaInfo[area].title;
+            content.innerHTML = areaInfo[area].content;
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Función para cerrar el modal
+        function closeModal() {
+            const modal = document.getElementById('infoModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('infoModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Función para redireccionar a páginas específicas
+        function redirectTo(page) {
+            window.location.href = page;
+        }
+
+        // Función para el botón regresar
+        function goBack() {
+            window.history.back();
+        }
+
+        // Función para hacer el mapa de imagen responsivo
+        function resizeImageMap() {
+            const img = document.getElementById('anatomyImage');
+            const map = document.getElementById('anatomyMap');
+            const areas = map.getElementsByTagName('area');
+            
+            // Obtener las dimensiones originales de la imagen
+            if (!originalImageWidth || !originalImageHeight) {
+                // Necesitamos conocer las dimensiones originales de tu imagen
+                // Ajusta estos valores según las dimensiones reales de "miembrosuperior.png"
+                originalImageWidth = 425; // Ajusta este valor
+                originalImageHeight = 1200; // Ajusta este valor
+            }
+            
+            // Calcular el factor de escala
+            const scaleX = img.offsetWidth / originalImageWidth;
+            const scaleY = img.offsetHeight / originalImageHeight;
+            
+            // Actualizar las coordenadas de cada área
+            for (let i = 0; i < areas.length; i++) {
+                const area = areas[i];
+                const areaName = area.getAttribute('data-area');
+                
+                if (originalCoords[areaName]) {
+                    const coords = originalCoords[areaName];
+                    const scaledCoords = [];
+                    
+                    // Escalar cada coordenada
+                    for (let j = 0; j < coords.length; j += 2) {
+                        scaledCoords.push(Math.round(coords[j] * scaleX));
+                        scaledCoords.push(Math.round(coords[j + 1] * scaleY));
+                    }
+                    
+                    area.setAttribute('coords', scaledCoords.join(','));
+                }
+            }
+        }
+
+        // Ejecutar el redimensionamiento cuando sea necesario
+        function initializeImageMap() {
+            const img = document.getElementById('anatomyImage');
+            
+            if (img.complete) {
+                resizeImageMap();
+            } else {
+                img.addEventListener('load', resizeImageMap);
+            }
+        }
+
+        // Event listeners
+        window.addEventListener('load', initializeImageMap);
+        window.addEventListener('resize', resizeImageMap);
+
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

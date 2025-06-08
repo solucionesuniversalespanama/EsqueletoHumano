@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Anatómico - Cintura Escapular</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-button::before {
+            content: "←";
+            font-size: 18px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .main-image-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71, #f39c12, #e74c3c);
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+            text-align: center;
+        }
+
+        #anatomical-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+            border-left: 4px solid #3498db;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .info-image {
+            width: 100%;
+            height: 180px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            border: 2px solid #2ecc71;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .info-image:hover {
+            border-color: #3498db;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .image-label {
+            font-weight: 600;
+            color: #34495e;
+            font-size: 1.1em;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+            overflow: hidden;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            color: white;
+            padding: 25px;
+            position: relative;
+        }
+
+        .modal-title {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        .modal-body h4 {
+            color: #3498db;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .modal-body p {
+            margin-bottom: 15px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .back-button {
+                position: static;
+                margin-bottom: 20px;
+                align-self: flex-start;
+            }
+
+            .header {
+                text-align: center;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hover effect for mapped areas */
+        .highlight-area {
+            filter: brightness(1.1) contrast(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="#" class="back-button" onclick="goBack()">Regresar</a>
+            <h1>Anatomía Interactiva</h1>
+            <p class="subtitle">Cintura Escapular - Explora cada estructura</p>
+        </div>
+
+        <div class="content">
+            <div class="main-image-container">
+                <div class="image-wrapper">
+                    <img src="../images/cinturaescapular.png"
+                         id="anatomical-image"
+                         usemap="#image-map"
+                         alt="Cintura Escapular">
+                   
+                    <map name="image-map" id="image-map">
+                        <area target=""
+                              alt="clavícula"
+                              title="clavícula"
+                              href="#"
+                              coords="31,128,104,148,159,147,204,114,267,100,378,92,431,117,475,147,533,145,580,112,567,54,443,43,202,26,45,66"
+                              shape="poly"
+                              onclick="showModal('clavicula'); return false;">
+                        <area target=""
+                              alt="escápula"
+                              title="escápula"
+                              href="#"
+                              coords="121,244,111,168,148,153,179,157,215,119,320,112,376,101,429,129,465,152,505,161,508,222,387,389,222,398"
+                              shape="poly"
+                              onclick="showModal('escapula'); return false;">
+                    </map>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="info-card">
+                    <h3>Clavícula</h3>
+                    <div class="info-image" id="clavicula-image-container" onclick="openWindow('clavicula.html')">
+                        <img src="https://via.placeholder.com/200x180/f39c12/white?text=CLAVICULA" alt="Clavícula" id="clavicula-image">
+                    </div>
+                    <div class="image-label">Hueso Clavicular</div>
+                </div>
+
+                <div class="info-card">
+                    <h3>Escápula</h3>
+                    <div class="info-image" id="escapula-image-container" onclick="openWindow('escapula.html')">
+                        <img src="https://via.placeholder.com/200x180/e74c3c/white?text=ESCAPULA" alt="Escápula" id="escapula-image">
+                    </div>
+                    <div class="image-label">Omóplato</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Clavícula -->
+    <div id="modal-clavicula" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Clavícula</h2>
+                <span class="close" onclick="closeModal('clavicula')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h4>Descripción Anatómica</h4>
+                <p>La clavícula es un hueso largo y curvado que forma parte de la cintura escapular. Conecta el brazo con el tronco del cuerpo.</p>
+               
+                <h4>Características Principales</h4>
+                <p><strong>Forma:</strong> Hueso largo con forma de "S" alargada</p>
+                <p><strong>Ubicación:</strong> Se extiende horizontalmente en la parte superior del tórax</p>
+                <p><strong>Función:</strong> Actúa como puntal que mantiene el hombro alejado del tórax</p>
+               
+                <h4>Articulaciones</h4>
+                <p>• <strong>Extremo medial:</strong> Se articula con el esternón (articulación esternoclavicular)</p>
+                <p>• <strong>Extremo lateral:</strong> Se articula con el acromion de la escápula (articulación acromioclavicular)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Escápula -->
+    <div id="modal-escapula" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Escápula (Omóplato)</h2>
+                <span class="close" onclick="closeModal('escapula')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h4>Descripción Anatómica</h4>
+                <p>La escápula, también conocida como omóplato, es un hueso plano triangular que forma la parte posterior de la cintura escapular.</p>
+               
+                <h4>Características Principales</h4>
+                <p><strong>Forma:</strong> Triangular y plana</p>
+                <p><strong>Ubicación:</strong> Cara posterolateral del tórax, entre las costillas 2ª y 7ª</p>
+                <p><strong>Función:</strong> Proporciona inserción muscular y forma la articulación del hombro</p>
+               
+                <h4>Estructuras Importantes</h4>
+                <p>• <strong>Cavidad glenoidea:</strong> Superficie articular para el húmero</p>
+                <p>• <strong>Acromion:</strong> Proceso que se articula con la clavícula</p>
+                <p>• <strong>Espina escapular:</strong> Cresta ósea prominente en la cara posterior</p>
+                <p>• <strong>Coracoides:</strong> Proceso en forma de gancho en el borde superior</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables para el manejo responsivo del mapa de imagen
+        let originalCoords = {};
+        let originalImageSize = { width: 0, height: 0 };
+
+        // Configuración de imágenes - Aquí puedes cambiar las rutas de las imágenes
+        const imageConfig = {
+            clavicula: '../images/clavicula.jpg',
+            escapula: '../images/Scarpula.jpg'
+        };
+
+        // Configuración de archivos HTML para abrir
+        const htmlFiles = {
+            clavicula: 'clavicula.html',
+            escapula: 'escapula.html'
+        };
+
+        // Inicializar cuando la página carga
+        window.addEventListener('load', function() {
+            initializeImageMap();
+            loadPredefinedImages();
+            window.addEventListener('resize', updateImageMap);
+        });
+
+        function initializeImageMap() {
+            const img = document.getElementById('anatomical-image');
+            const areas = document.querySelectorAll('area');
+           
+            // Esperar a que la imagen cargue completamente
+            if (img.complete) {
+                setupImageMap();
+            } else {
+                img.addEventListener('load', setupImageMap);
+            }
+        }
+
+        function setupImageMap() {
+            const img = document.getElementById('anatomical-image');
+            const areas = document.querySelectorAll('area');
+           
+            // Guardar tamaño original de la imagen
+            originalImageSize.width = img.naturalWidth;
+            originalImageSize.height = img.naturalHeight;
+           
+            // Guardar coordenadas originales
+            areas.forEach((area, index) => {
+                originalCoords[index] = area.getAttribute('coords');
+            });
+           
+            // Actualizar coordenadas inicialmente
+            updateImageMap();
+        }
+
+        function updateImageMap() {
+            const img = document.getElementById('anatomical-image');
+            const areas = document.querySelectorAll('area');
+           
+            if (!img || originalImageSize.width === 0) return;
+           
+            // Calcular factor de escala
+            const scaleX = img.offsetWidth / originalImageSize.width;
+            const scaleY = img.offsetHeight / originalImageSize.height;
+           
+            // Actualizar coordenadas de cada área
+            areas.forEach((area, index) => {
+                if (originalCoords[index]) {
+                    const coords = originalCoords[index].split(',');
+                    const scaledCoords = coords.map((coord, i) => {
+                        const scale = i % 2 === 0 ? scaleX : scaleY;
+                        return Math.round(parseFloat(coord) * scale);
+                    });
+                    area.setAttribute('coords', scaledCoords.join(','));
+                }
+            });
+        }
+
+        // Función para cargar imágenes predefinidas
+        function loadPredefinedImages() {
+            Object.keys(imageConfig).forEach(type => {
+                const img = document.getElementById(type + '-image');
+                if (img && imageConfig[type]) {
+                    img.src = imageConfig[type];
+                    img.onerror = function() {
+                        // Si la imagen no se puede cargar, mantener el placeholder
+                        console.warn(`No se pudo cargar la imagen: ${imageConfig[type]}`);
+                    };
+                }
+            });
+        }
+
+        // Función para abrir nueva ventana con archivo HTML (para los recuadros laterales)
+        function openWindow(htmlFile) {
+            // Opciones para la nueva ventana
+            const windowFeatures = 'width=800,height=600,scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no';
+            
+            // Abrir nueva ventana
+            const newWindow = window.open(htmlFile, '_blank', windowFeatures);
+            
+            // Verificar si se pudo abrir la ventana (algunos navegadores bloquean popups)
+            if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                alert('Por favor, permite las ventanas emergentes para abrir la información detallada.');
+                // Como alternativa, abrir en la misma pestaña
+                window.location.href = htmlFile;
+            }
+        }
+
+        // Función para mostrar modal (para las áreas mapeadas)
+        function showModal(type) {
+            const modal = document.getElementById('modal-' + type);
+            if (modal) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Función para cerrar modal
+        function closeModal(type) {
+            const modal = document.getElementById('modal-' + type);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera del contenido
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Cerrar modal con la tecla Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
+        });
+
+        // Función para el botón de regresar
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = '/';
+            }
+        }
+
+        // Efecto hover para las áreas del mapa
+        document.addEventListener('DOMContentLoaded', function() {
+            const areas = document.querySelectorAll('area');
+            areas.forEach(area => {
+                area.addEventListener('mouseenter', function() {
+                    document.getElementById('anatomical-image').style.transform = 'scale(1.02)';
+                    this.style.cursor = 'pointer';
+                });
+               
+                area.addEventListener('mouseleave', function() {
+                    document.getElementById('anatomical-image').style.transform = 'scale(1)';
+                });
+            });
+
+            // Efecto hover para las imágenes de la sidebar
+            const infoImages = document.querySelectorAll('.info-image');
+            infoImages.forEach(image => {
+                image.addEventListener('mouseenter', function() {
+                    this.style.cursor = 'pointer';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
