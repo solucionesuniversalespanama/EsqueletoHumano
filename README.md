@@ -6,7 +6,7 @@ Descripción del Proyecto
 Este proyecto es una aplicación web interactiva que ofrece una exploración detallada y visual del esqueleto humano. Fue diseñado para ser una herramienta educativa, permitiendo a los usuarios interactuar con diferentes partes del esqueleto para aprender sobre su anatomía y funciones de una manera dinámica y atractiva.
 
 Enlaces
-Ver la Visualización: [Tu Enlace de Visualización Aquí]
+Ver la Visualización: https://solucionesuniversalespanama.github.io/EsqueletoHumano/
 
 Video de Mención: [Tu Enlace al Video de YouTube Aquí]
 
@@ -33,4 +33,4 @@ Contribuciones
 ¡Las contribuciones son bienvenidas! Si deseas mejorar el proyecto, no dudes en enviar un pull request. Si encuentras algún error o tienes alguna sugerencia, por favor, abre un issue.
 
 Autor
-Tu Nombre de Usuario: [Enlace a tu perfil de GitHub]
+@solucionesuniversalespanama
