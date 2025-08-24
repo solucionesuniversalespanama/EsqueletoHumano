@@ -8,7 +8,7 @@ Este proyecto es una aplicación web interactiva que ofrece una exploración det
 Enlaces
 Ver la Visualización: https://solucionesuniversalespanama.github.io/EsqueletoHumano/
 
-Video de Mención: [Tu Enlace al Video de YouTube Aquí]
+Video de Mención: https://youtu.be/AcX2p8WNFYc?si=ubghyf_fQi5RxGS4
 
 Características Principales
 Interactividad: Haz clic en los diferentes huesos para ver su nombre, una breve descripción, o información adicional.
